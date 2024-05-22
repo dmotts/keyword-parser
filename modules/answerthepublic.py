@@ -49,7 +49,7 @@ class Answer(Parser):
         
         chrome_options.add_argument('--disable-dev-shm-usage')
 
-        chrome_options.binary_location = "/usr/bin/google-chrome" 
+        #chrome_options.binary_location = "/usr/bin/google-chrome" 
         
         chrome_options.add_argument('--remote-debugging-port=9222') 
 
