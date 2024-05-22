@@ -36,6 +36,14 @@ class Answer(Parser):
         chrome_options.headless = headless
         # Adding an argument to set the browser language to English
         chrome_options.add_argument('--lang=en')
+
+    
+        chrome_options.add_argument('--no-sandbox')
+        
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        
+        chrome_options.add_argument('--remote-debugging-port=9222') 
+
         # Disabling the 'credentials_enable_service' option to prevent saving credentials
         chrome_options.add_experimental_option("prefs", {"credentials_enable_service": False})
 
