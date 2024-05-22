@@ -258,7 +258,7 @@ class Answer(Parser):
         self.__input_keyword(keyword)
 
         # Click the search button
-        self.__click_searcseah_button()
+        self.__click_search_button()
 
         # Display a message while waiting for the keywords to load
         print('Waiting for the keywords to load...')
