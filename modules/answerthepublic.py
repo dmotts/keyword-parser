@@ -154,7 +154,7 @@ class Answer(Parser):
 
     def __click_search_button(self):
         # Locate the search button element by its class name ("search__submit").
-        element = self._wait_for_element_clickable(By.CLASS_NAME, "search__submit")
+        element = self._wait_for_element_clickable(By.CSS_SELECTOR, "input.search__submit[data-search-validator-target='btn']")
         
         # Simulate a click on the found search button element.
         element.click()
