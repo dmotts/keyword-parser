@@ -162,7 +162,7 @@ class Answer(Parser):
 
     def login(self):
         # Check if cookies file exists
-        if self.__cookies_file_exists(self.cookies_file_path):
+        if (False): # self.__cookies_file_exists(self.cookies_file_path):
             print('Cookies found. Logging into the account...')
 
             # Load cookies from the existing file
@@ -202,10 +202,10 @@ class Answer(Parser):
                 self._wait_for_element_invisible(By.CLASS_NAME, 'btn-login')
 
                 # Get the current session cookies and save them to a file
-                cookies = self.driver.get_cookies()
-                with open(self.cookies_file_path, "wb") as cookies_file:
-                    pickle.dump(cookies, cookies_file)
-                sleep(1)  # Delay after saving cookies
+            #    cookies = self.driver.get_cookies()
+             #   with open(self.cookies_file_path, "wb") as cookies_file:
+                    # pickle.dump(cookies, cookies_file)
+                
             except Exception as e:
                 # Raise an exception in case of a login error
                 raise Exception("Login error: \n", e)
