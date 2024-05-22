@@ -91,6 +91,17 @@ class Answer(Parser):
         except TimeoutException:
             print("Element did not disappear within the specified timeout")
 
+    def __handle_modal_popup(self):
+        try:
+            dismiss_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[text()='DISMISS']"))
+            )
+            dismiss_button.click()
+            sleep(1)  # Delay after clicking the dismiss button
+            print("Dismissed the popup.")
+        except TimeoutException:
+            print("No dismiss button found or it didn't appear within 10 seconds.")
+    
     def __set_source(self, mode):
         # Find the search labels container element using its class name "search__labels"
         search_labels_div = self.driver.find_element(By.CLASS_NAME, "search__labels")
@@ -198,6 +209,10 @@ class Answer(Parser):
             except Exception as e:
                 # Raise an exception in case of a login error
                 raise Exception("Login error: \n", e)
+
+        # Handle the modal popup if it exists
+        self.__handle_modal_popup()
+
 
     @staticmethod
     def __parse_keywords(mode, soup):
