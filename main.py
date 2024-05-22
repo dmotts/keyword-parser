@@ -1,12 +1,6 @@
 from modules.account_manager import AccountManager
 from modules.answerthepublic import Answer
 
-
-# accounts = [
-#     {'email': 'lindamiletichme@gmail.com', 'password': 'gapfob-3fowqy-coFgyj', 'proxy': None},
-# ]
-
-
 def answerthepublic(keywords, project_folder):
     account_manager = AccountManager()
     accounts = account_manager.get_accounts()
@@ -29,10 +23,10 @@ def keywordtool():
 
 
 if __name__ == '__main__':
-    project_name = "Keto"
+    project_name = "Tea"
 
     keys = [
-        'keto diet',
+        'weight loss tea',
     ]
 
     answerthepublic(keys, project_name)
