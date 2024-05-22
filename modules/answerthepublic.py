@@ -94,7 +94,7 @@ class Answer(Parser):
     def __handle_modal_popup(self):
         try:
             dismiss_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//button[text()='DISMISS']"))
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-multiple-session-modal-target='btnSubmit']"))
             )
             dismiss_button.click()
             sleep(1)  # Delay after clicking the dismiss button
@@ -210,9 +210,7 @@ class Answer(Parser):
                 # Raise an exception in case of a login error
                 raise Exception("Login error: \n", e)
 
-        # Handle the modal popup if it exists
-        self.__handle_modal_popup()
-
+        
 
     @staticmethod
     def __parse_keywords(mode, soup):
@@ -239,6 +237,10 @@ class Answer(Parser):
     def parse(self, keyword, source='google', country='united states', language='english', file_format='txt', timeout=20):
         # Navigate to the URL
         self.driver.get(self.URL)
+
+        # Handle the modal popup if it exists
+        self.__handle_modal_popup()
+
 
         # Set the search source if different from the default (Google)
         if not source.lower() == 'google':
