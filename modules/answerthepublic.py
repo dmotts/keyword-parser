@@ -5,6 +5,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
+import chromedriver_autoinstaller
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -30,6 +31,10 @@ class Answer(Parser):
 
     @staticmethod
     def _set_driver(proxy, headless):
+
+        # Automatically download and install the correct version of ChromeDriver
+        chromedriver_autoinstaller.install()
+        
         # Creating a ChromeOptions object for configuring Chrome browser options
         chrome_options = uc.ChromeOptions()
         # Setting headless mode based on the 'headless' parameter
