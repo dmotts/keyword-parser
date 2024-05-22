@@ -23,10 +23,10 @@ def keywordtool():
 
 
 if __name__ == '__main__':
-    project_name = "Tea"
+    project_name = "Workout"
 
     keys = [
-        'weight loss tea',
+        'workout',
     ]
 
     answerthepublic(keys, project_name)

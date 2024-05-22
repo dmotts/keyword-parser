@@ -4,6 +4,7 @@ from time import sleep
 from bs4 import BeautifulSoup
 from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 # import chromedriver_autoinstaller
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
@@ -150,7 +151,12 @@ class Answer(Parser):
 
         # Input the provided keyword into the found input element.
         element.send_keys(key)
-        sleep(5)  # Delay after inputting the keyword
+        sleep(2)  # Delay after inputting the keyword
+
+        # Press "Enter" key after inputting the keyword
+        element.send_keys(Keys.RETURN)
+
+    sleep(2)
 
     def __click_search_button(self):
         # Locate the search button element by its class name ("search__submit").
@@ -258,7 +264,7 @@ class Answer(Parser):
         self.__input_keyword(keyword)
 
         # Click the search button
-        self.__click_search_button()
+        # self.__click_search_button()
 
         # Display a message while waiting for the keywords to load
         print('Waiting for the keywords to load...')
