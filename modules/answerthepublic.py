@@ -1,7 +1,6 @@
 import os
 import pickle
 from time import sleep
-
 from bs4 import BeautifulSoup
 from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
@@ -9,10 +8,8 @@ import chromedriver_autoinstaller
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
 from modules.base import Parser
 import undetected_chromedriver as uc
-
 
 class Answer(Parser):
     URL = 'https://answerthepublic.com/'
@@ -24,6 +21,7 @@ class Answer(Parser):
         self.password = password
         self.cookies_file_path = os.path.join(self.cookies_path, f'answer_{self.email}.pkl')
         self.driver = self._set_driver(proxy, headless)
+        sleep(2)  # Delay after initializing the driver
 
     @staticmethod
     def __cookies_file_exists(cookies_filename):
@@ -31,29 +29,19 @@ class Answer(Parser):
 
     @staticmethod
     def _set_driver(proxy, headless):
-
         # Automatically download and install the correct version of ChromeDriver
         chromedriver_autoinstaller.install()
-        
+
         # Creating a ChromeOptions object for configuring Chrome browser options
         chrome_options = uc.ChromeOptions()
         # Setting headless mode based on the 'headless' parameter
         chrome_options.headless = headless
         # Adding an argument to set the browser language to English
         chrome_options.add_argument('--lang=en')
-
-    
         chrome_options.add_argument('--no-sandbox')
-
         chrome_options.add_argument('--disable-gpu')
-        
         chrome_options.add_argument('--disable-dev-shm-usage')
-
-        #chrome_options.binary_location = "/usr/bin/google-chrome" 
-        
         chrome_options.add_argument('--remote-debugging-port=9222') 
-
-        # Disabling the 'credentials_enable_service' option to prevent saving credentials
         chrome_options.add_experimental_option("prefs", {"credentials_enable_service": False})
 
         # Configuring proxy settings if a proxy is provided
@@ -66,15 +54,12 @@ class Answer(Parser):
                 }
             }
         else:
-            # No proxy provided, setting proxy_options to None
             proxy_options = None
 
         # Creating a Chrome driver instance with configured options and proxy settings
-
-        
         driver = uc.Chrome(options=chrome_options, seleniumwire_options=proxy_options)
+        sleep(2)  # Delay after creating the driver instance
 
-        # Returning the configured Chrome driver
         return driver
 
     def _wait_for_element_located(self, by, value, timeout=15):
@@ -82,6 +67,7 @@ class Answer(Parser):
             element = WebDriverWait(self.driver, timeout).until(
                 EC.presence_of_element_located((by, value))
             )
+            sleep(1)  # Delay after element is located
             return element
         except TimeoutException:
             raise NoSuchElementException(f"Element not found: {by}={value}")
@@ -91,6 +77,7 @@ class Answer(Parser):
             element = WebDriverWait(self.driver, timeout).until(
                 EC.element_to_be_clickable((by, value))
             )
+            sleep(1)  # Delay after element is clickable
             return element
         except TimeoutException:
             raise NoSuchElementException(f"Element not found: {by}={value}")
@@ -100,6 +87,7 @@ class Answer(Parser):
             WebDriverWait(self.driver, timeout).until(
                 EC.invisibility_of_element((by, value))
             )
+            sleep(1)  # Delay after element becomes invisible
         except TimeoutException:
             print("Element did not disappear within the specified timeout")
 
@@ -122,6 +110,7 @@ class Answer(Parser):
         if element is not None:
             # Click the found element
             element.click()
+            sleep(1)  # Delay after setting the source
         else:
             # Handle the situation when the element was not found
             print(f"Element for mode '{mode}' not found.")
@@ -133,6 +122,7 @@ class Answer(Parser):
         # Select the option in the dropdown with the visible text matching the provided country name.
         # The .title() method is used to capitalize the first letter of each word in the country name.
         dropdown.select_by_visible_text(country.title())
+        sleep(1)  # Delay after setting the country
 
     def __set_language(self, lang):
         # Locate the dropdown element by its ID ("lang").
@@ -141,6 +131,7 @@ class Answer(Parser):
         # Select the option in the dropdown with the visible text matching the provided language.
         # The .title() method is used to capitalize the first letter of each word in the language name.
         dropdown.select_by_visible_text(lang.title())
+        sleep(1)  # Delay after setting the language
 
     def __input_keyword(self, key):
         # Locate the input element by its ID ("report_keyword").
@@ -148,6 +139,7 @@ class Answer(Parser):
 
         # Input the provided keyword into the found input element.
         element.send_keys(key)
+        sleep(1)  # Delay after inputting the keyword
 
     def __click_search_button(self):
         # Locate the search button element by its class name ("search__submit").
@@ -155,6 +147,7 @@ class Answer(Parser):
 
         # Simulate a click on the found search button element.
         element.click()
+        sleep(1)  # Delay after clicking the search button
 
     def login(self):
         # Check if cookies file exists
@@ -172,22 +165,27 @@ class Answer(Parser):
 
             # Refresh the page after adding cookies
             self.driver.get(self.LOGIN_URL)
+            sleep(2)  # Delay after logging in with cookies
         else:
             try:
                 # Navigate to the login URL
                 self.driver.get(self.LOGIN_URL)
+                sleep(2)  # Delay after navigating to login URL
 
                 # Find and fill in the email input field
                 input_email = self._wait_for_element_located(By.ID, 'user_email')
                 input_email.send_keys(self.email)
+                sleep(1)  # Delay after inputting email
 
                 # Find and fill in the password input field
                 input_password = self._wait_for_element_located(By.ID, 'user_password')
                 input_password.send_keys(self.password)
+                sleep(1)  # Delay after inputting password
 
                 # Find and click the login button
                 login_button = self.driver.find_element(By.CLASS_NAME, 'btn-login')
                 login_button.click()
+                sleep(1)  # Delay after clicking the login button
 
                 # Wait for the login button to become invisible (indicating successful login)
                 self._wait_for_element_invisible(By.CLASS_NAME, 'btn-login')
@@ -196,6 +194,7 @@ class Answer(Parser):
                 cookies = self.driver.get_cookies()
                 with open(self.cookies_file_path, "wb") as cookies_file:
                     pickle.dump(cookies, cookies_file)
+                sleep(1)  # Delay after saving cookies
             except Exception as e:
                 # Raise an exception in case of a login error
                 raise Exception("Login error: \n", e)
@@ -221,7 +220,7 @@ class Answer(Parser):
 
         # Return the list of extracted text for the specified keyword type (mode)
         return text_list
-
+        
     def parse(self, keyword, source='google', country='united states', language='english', file_format='txt', timeout=20):
         # Navigate to the URL
         self.driver.get(self.URL)
