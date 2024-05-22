@@ -150,7 +150,7 @@ class Answer(Parser):
 
         # Input the provided keyword into the found input element.
         element.send_keys(key)
-        sleep(1)  # Delay after inputting the keyword
+        sleep(5)  # Delay after inputting the keyword
 
     def __click_search_button(self):
         # Locate the search button element by its class name ("search__submit").
@@ -258,7 +258,7 @@ class Answer(Parser):
         self.__input_keyword(keyword)
 
         # Click the search button
-        self.__click_search_button()
+        self.__click_searcseah_button()
 
         # Display a message while waiting for the keywords to load
         print('Waiting for the keywords to load...')
