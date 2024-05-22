@@ -155,7 +155,8 @@ class Answer(Parser):
     def __click_search_button(self):
         # Locate the search button element by its class name ("search__submit").
         element = self.driver.find_element(By.CLASS_NAME, "search__submit")
-
+        self._wait_for_element_clickable(By.CLASS_NAME, "search__submit")
+        
         # Simulate a click on the found search button element.
         element.click()
         sleep(1)  # Delay after clicking the search button
