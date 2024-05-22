@@ -53,6 +53,8 @@ class Answer(Parser):
             proxy_options = None
 
         # Creating a Chrome driver instance with configured options and proxy settings
+
+        
         driver = uc.Chrome(options=chrome_options, seleniumwire_options=proxy_options)
 
         # Returning the configured Chrome driver
