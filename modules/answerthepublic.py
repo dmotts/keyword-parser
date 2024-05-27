@@ -33,12 +33,18 @@ class Answer(Parser):
         # Automatically download and install the correct version of ChromeDriver
         # chromedriver_autoinstaller.install()
 
+        # Define custom user agent
+        user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Chrome/125.0.6422.76 Safari/537.36"
+        
         # Creating a ChromeOptions object for configuring Chrome browser options
         chrome_options = uc.ChromeOptions()
         # Setting headless mode based on the 'headless' parameter
         chrome_options.headless = headless
         # Adding an argument to set the browser language to English
         chrome_options.add_argument('--lang=en')
+
+        chrome_options.add_argument(f"user-agent={user_agent}")
+
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--disable-gpu')
         chrome_options.add_argument('--disable-dev-shm-usage')
