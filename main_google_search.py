@@ -1,29 +1,42 @@
+import logging
 from modules.google_search import GoogleSearch
 
-if __name__ == '__main__':
+def setup_logging():
+    logging.basicConfig(
+        format='%(asctime)s - %(levelname)s - %(message)s',
+        level=logging.INFO
+    )
+
+def extract_google_pages(keywords, project_folder, max_pages, proxy=None, headless=False):
     try:
-        keywords = []
-        while True:
-            search_term = input("Enter the search term for a keyword (press Enter to finish): ")
-            if search_term:
-                keywords.append(search_term)
-            else:
-                break
-
-        max_pages = int(input("Enter the number of pages to search: "))
-
-        # Determine project name based on keywords before the first quotation mark
-        project_name = ""
-        for keyword in keywords:
-            if '"' in keyword:
-                project_name = " ".join(keyword.split('"')[0].split())
-                break
-        if not project_name:
-            project_name = " ".join(keywords)
-
-        google_search = GoogleSearch(project_name)
-        google_search.save_search_results(keywords, max_pages)
-    except ValueError:
-        print("Please enter a valid number for the number of pages.")
+        google_search = GoogleSearch(project_folder, proxy=proxy, headless=headless)
+        google_search.extract_search_pages(keywords, max_pages)
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred during extraction: {e}")
+
+if __name__ == '__main__':
+    setup_logging()
+
+    project_name = "example_project"
+
+    keywords = []
+    while True:
+        keyword = input("Enter a search term (or type 'done' to finish): ").strip()
+        if keyword.lower() == 'done':
+            break
+        if keyword:
+            keywords.append(keyword)
+
+    if not keywords:
+        logging.info("No keywords entered. Exiting.")
+        exit()
+
+    try:
+        max_pages = int(input("Enter the maximum number of pages to scrape: ").strip())
+    except ValueError:
+        logging.error("Invalid input for maximum number of pages. Exiting.")
+        exit()
+
+    proxy = None
+    headless = False
+    extract_google_pages(keywords, project_name, max_pages, proxy, headless)

@@ -1,26 +1,21 @@
+import os
+import logging
 from time import sleep
+from bs4 import BeautifulSoup
 from selenium.webdriver.common.by import By
-from modules.base import Parser
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import undetected_chromedriver as uc
+from modules.base import Parser
 
 class GoogleSearch(Parser):
+    URL = 'https://www.google.com/'
+
     def __init__(self, project_folder, proxy=None, headless=False):
         super().__init__(project_folder)
         self.driver = self._set_driver(proxy, headless)
-
-    def save_search_results(self, keywords, max_pages):
-        all_text = ''
-        for keyword in keywords:
-            self.driver.get(f'https://www.google.com/search?q={keyword}')
-            for page in range(max_pages):
-                all_text += self._get_page_text()
-                try:
-                    next_button = self.driver.find_element(By.ID, 'pnnext')
-                    next_button.click()
-                    sleep(2)  # Adding a delay to wait for the next page to load
-                except:
-                    break
-        self.write_to_file(all_text, self.data_path, 'search_results', 'txt')
+        sleep(2)
 
     def _set_driver(self, proxy, headless):
         user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:125.0) Gecko/20100101 Chrome/125.0.6422.76 Safari/537.36"
@@ -44,13 +39,47 @@ class GoogleSearch(Parser):
         } if proxy else None
 
         driver = uc.Chrome(options=chrome_options, seleniumwire_options=proxy_options)
-        sleep(2)  # Delay after creating the driver instance
-
+        sleep(2)
         return driver
 
-    def _get_page_text(self):
-        results = self.driver.find_elements(By.CLASS_NAME, 'g')
-        page_text = ''
-        for result in results:
-            page_text += result.text + '\n'
-        return page_text
+    def _wait_for_element_located(self, by, value, timeout=15):
+        try:
+            element = WebDriverWait(self.driver, timeout).until(
+                EC.presence_of_element_located((by, value))
+            )
+            sleep(1)
+            return element
+        except Exception as e:
+            logging.error(f"Element not found: {by}={value}, error: {e}")
+            raise
+
+    def extract_search_pages(self, keywords, max_pages):
+        try:
+            for keyword in keywords:
+                self.driver.get(self.URL)
+                search_box = self._wait_for_element_located(By.NAME, 'q')
+                search_box.send_keys(keyword)
+                search_box.send_keys(Keys.RETURN)
+
+                page_text = []
+                for page in range(max_pages):
+                    sleep(2)
+                    page_content = self.driver.page_source
+                    soup = BeautifulSoup(page_content, 'html.parser')
+                    results = soup.find_all('div', class_='g')
+                    for result in results:
+                        page_text.append(result.get_text(separator=' ', strip=True))
+
+                    next_button = self.driver.find_elements(By.ID, 'pnnext')
+                    if next_button:
+                        next_button[0].click()
+                    else:
+                        break
+
+                self.write_to_doc("\n\n".join(page_text), self.data_path, f'{keyword}_results')
+
+        except Exception as e:
+            logging.error(f"An error occurred while extracting search pages: {e}")
+            raise
+        finally:
+            self.driver.quit()
