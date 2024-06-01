@@ -5,9 +5,10 @@ if __name__ == '__main__':
         keywords = []
         while True:
             search_term = input("Enter the search term for a keyword (press Enter to finish): ")
-            if not search_term:
+            if search_term:
+                keywords.append(search_term)
+            else:
                 break
-            keywords.append(search_term)
 
         max_pages = int(input("Enter the number of pages to search: "))
 

@@ -4,7 +4,7 @@ from modules.base import Parser
 import undetected_chromedriver as uc
 
 class GoogleSearch(Parser):
-    def __init__(self, project_folder, proxy=None, headless=True):
+    def __init__(self, project_folder, proxy=None, headless=False):
         super().__init__(project_folder)
         self.driver = self._set_driver(proxy, headless)
 
