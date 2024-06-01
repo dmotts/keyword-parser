@@ -38,5 +38,5 @@ if __name__ == '__main__':
         exit()
 
     proxy = None
-    headless = False
+    headless = True
     extract_google_pages(keywords, project_name, max_pages, proxy, headless)
