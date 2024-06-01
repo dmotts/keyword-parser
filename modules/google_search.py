@@ -1,5 +1,6 @@
 import os
 import pickle
+from warnings import PendingDeprecationWarning
 from time import sleep
 from bs4 import BeautifulSoup
 from selenium.common import TimeoutException, NoSuchElementException
