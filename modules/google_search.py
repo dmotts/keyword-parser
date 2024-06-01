@@ -1,6 +1,16 @@
-from seleniumwire import webdriver as uc
+import os
+import pickle
 from time import sleep
+from bs4 import BeautifulSoup
+from selenium.common import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+# import chromedriver_autoinstaller
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from modules.base import Parser
+import undetected_chromedriver as uc
 from docx import Document
 
 class Parser:
